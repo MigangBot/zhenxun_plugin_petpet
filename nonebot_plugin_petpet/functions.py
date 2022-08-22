@@ -1391,7 +1391,7 @@ def teach(img: BuildImage = UserImg(), arg: str = Arg()):
         frame.draw_text(
             (10, frame.height - 80, frame.width - 10, frame.height - 5),
             arg,
-            max_fontsize=45,
+            max_fontsize=50,
             fill="white",
             stroke_fill="black",
             stroke_ratio=0.06,
@@ -1412,7 +1412,7 @@ def addition(img: BuildImage = UserImg(), arg: str = Arg()):
 
     if arg:
         expand_frame = BuildImage.new("RGBA", (246, 286), "white")
-        expand_frame.paste(frame, (0, 0))
+        expand_frame.paste(frame)
         try:
             expand_frame.draw_text(
                 (10, 246, 236, 286),
@@ -1425,8 +1425,44 @@ def addition(img: BuildImage = UserImg(), arg: str = Arg()):
         frame = expand_frame
 
     def make(img: BuildImage) -> BuildImage:
+        return frame.copy().paste(img.resize((70, 70), keep_ratio=True), (0, 0))
+
+    return make_jpg_or_gif(img, make)
+
+
+def gun(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("gun/0.png")
+    frame.paste(img.resize((500, 500), keep_ratio=True), below=True)
+    return frame.save_jpg()
+
+
+def blood_pressure(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("blood_pressure/0.png")
+
+    def make(img: BuildImage) -> BuildImage:
         return frame.copy().paste(
-            img.resize((70, 70), keep_ratio=True), (0, 0)
+            img.resize((414, 450), keep_ratio=True), (16, 17), below=True
         )
 
     return make_jpg_or_gif(img, make)
+
+
+def read_book(img: BuildImage = UserImg(), arg: str = Arg()):
+    frame = load_image("read_book/0.png")
+    points = ((0, 108), (1092, 0), (1023, 1134), (29, 1134))
+    cover = img.resize((1000, 1100), keep_ratio=True).perspective(points)
+    frame.paste(cover, (1138, 1172), below=True)
+    if arg:
+        try:
+            frame.draw_text(
+                (870, 1500, 1110, 2280),
+                arg,
+                max_fontsize=200,
+                min_fontsize=70,
+                allow_wrap=True,
+                fill="white",
+                weight="bold",
+            )
+        except:
+            return TEXT_TOO_LONG
+    return frame.save_jpg()

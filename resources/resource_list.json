@@ -1,5 +1,9 @@
 [
     {
+        "path": "images/addiction/0.png",
+        "hash": "228c787301e5cb41e631b60437eca454"
+    },
+    {
         "path": "images/alike/0.png",
         "hash": "a3eeb0a3ff0ec24a9e2cf1655b8ccd71"
     },
@@ -82,6 +86,10 @@
     {
         "path": "images/bite/9.png",
         "hash": "d767e4f3ce5be8ab67d251dcf5e9820f"
+    },
+    {
+        "path": "images/blood_pressure/0.png",
+        "hash": "d5dd1ea44908952885ff14a283f99695"
     },
     {
         "path": "images/china_flag/0.png",
@@ -598,6 +606,10 @@
     {
         "path": "images/garbage/9.png",
         "hash": "6749dad6bd2ade275a157a205ef6b860"
+    },
+    {
+        "path": "images/gun/0.png",
+        "hash": "23e223aba69b4c42cd04dcae58aec254"
     },
     {
         "path": "images/hammer/0.png",
@@ -1134,6 +1146,10 @@
     {
         "path": "images/punch/9.png",
         "hash": "f17f4a89f7fed4ff5360b7a566303cd1"
+    },
+    {
+        "path": "images/read_book/0.png",
+        "hash": "c0bfd676ec62f8ef1a2e2c98244681ba"
     },
     {
         "path": "images/repeat/0.jpg",
