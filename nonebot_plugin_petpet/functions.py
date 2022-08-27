@@ -1432,7 +1432,7 @@ def addition(img: BuildImage = UserImg(), arg: str = Arg()):
 
 def gun(img: BuildImage = UserImg(), arg=NoArg()):
     frame = load_image("gun/0.png")
-    frame.paste(img.resize((500, 500), keep_ratio=True), below=True)
+    frame.paste(img.convert("RGBA").resize((500, 500), keep_ratio=True), below=True)
     return frame.save_jpg()
 
 
@@ -1450,19 +1450,56 @@ def blood_pressure(img: BuildImage = UserImg(), arg=NoArg()):
 def read_book(img: BuildImage = UserImg(), arg: str = Arg()):
     frame = load_image("read_book/0.png")
     points = ((0, 108), (1092, 0), (1023, 1134), (29, 1134))
-    cover = img.resize((1000, 1100), keep_ratio=True).perspective(points)
+    img = img.convert("RGBA").resize((1000, 1100), keep_ratio=True, direction="north")
+    cover = img.perspective(points)
     frame.paste(cover, (1138, 1172), below=True)
     if arg:
-        try:
-            frame.draw_text(
-                (870, 1500, 1110, 2280),
-                arg,
-                max_fontsize=200,
-                min_fontsize=70,
-                allow_wrap=True,
-                fill="white",
-                weight="bold",
+        chars = list(" ".join(arg.splitlines()))
+        pieces: List[BuildImage] = []
+        for char in chars:
+            piece = BuildImage(
+                Text2Image.from_text(char, 200, fill="white", weight="bold").to_image()
             )
-        except:
+            if re.fullmatch(r"[a-zA-Z0-9\s]", char):
+                piece = piece.rotate(-90, expand=True)
+            else:
+                piece = piece.resize_canvas((piece.width, piece.height - 40), "south")
+            pieces.append(piece)
+        w = max((piece.width for piece in pieces))
+        h = sum((piece.height for piece in pieces))
+        if w > 240 or h > 3000:
             return TEXT_TOO_LONG
+        text_img = BuildImage.new("RGBA", (w, h))
+        h = 0
+        for piece in pieces:
+            text_img.paste(piece, ((w - piece.width) // 2, h), alpha=True)
+            h += piece.height
+        if h > 780:
+            ratio = 780 / h
+            text_img = text_img.resize((int(w * ratio), int(h * ratio)))
+        text_img = text_img.rotate(3, expand=True)
+        w, h = text_img.size
+        frame.paste(text_img, (870 + (240 - w) // 2, 1500 + (780 - h) // 2), alpha=True)
+    return frame.save_jpg()
+
+
+def call_110(
+    user_imgs: List[BuildImage] = UserImgs(1, 2),
+    sender_img: BuildImage = SenderImg(),
+    arg=NoArg(),
+):
+    if len(user_imgs) >= 2:
+        img1 = user_imgs[0]
+        img0 = user_imgs[1]
+    else:
+        img1 = sender_img
+        img0 = user_imgs[0]
+    img1 = img1.convert("RGBA").square().resize((250, 250))
+    img0 = img0.convert("RGBA").square().resize((250, 250))
+
+    frame = BuildImage.new("RGB", (900, 500), "white")
+    frame.draw_text((0, 0, 900, 200), "遇到困难请拨打", max_fontsize=100)
+    frame.paste(img1, (50, 200), alpha=True)
+    frame.paste(img1, (325, 200), alpha=True)
+    frame.paste(img0, (600, 200), alpha=True)
     return frame.save_jpg()
