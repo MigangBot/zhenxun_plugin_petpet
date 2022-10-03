@@ -1,6 +1,27 @@
+<div align="center">
+
+  <a href="https://v2.nonebot.dev/">
+    <img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot">
+  </a>
+
 # nonebot-plugin-petpet
 
-[Nonebot2](https://github.com/nonebot/nonebot2) 插件，制作头像相关的表情包
+_✨ [Nonebot2](https://github.com/nonebot/nonebot2) 插件，制作头像相关的表情包 ✨_
+
+<p align="center">
+  <img src="https://img.shields.io/github/license/noneplugin/nonebot-plugin-petpet" alt="license">
+  <img src="https://img.shields.io/badge/python-3.7.3+-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/nonebot-2.0.0b4+-red.svg" alt="NoneBot">
+  <a href="https://pypi.org/project/nonebot-plugin-petpet">
+    <img src="https://badgen.net/pypi/v/nonebot-plugin-petpet" alt="pypi">
+  </a>
+  <a href="https://jq.qq.com/?_wv=1027&k=wDVNrMdr">
+    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-682145034-orange" alt="qq group">
+  </a>
+</p>
+
+</div>
+
 
 文字类表情包制作：[nonebot-plugin-memes](https://github.com/noneplugin/nonebot-plugin-memes)
 
@@ -30,6 +51,49 @@ pip install nonebot_plugin_petpet
 可以手动下载 `resources` 下的 `images` 文件夹，放置于机器人运行目录下的 `data/petpet/` 文件夹中
 
 
+### 配置项
+
+<details>
+<summary>展开/收起</summary>
+
+#### `petpet_command_start`
+ - 类型：`str`
+ - 默认：`""`
+ - 说明：命令开始字符，为空则使用Nonebot设置中的`command_start`
+
+#### `petpet_resource_url`
+ - 类型：`str`
+ - 默认：`https://ghproxy.com/https://raw.githubusercontent.com/noneplugin/nonebot-plugin-petpet/v0.3.x/resources`
+ - 说明：资源下载链接，默认为使用`ghproxy`代理的github仓库链接
+
+#### `petpet_disabled_list`
+ - 类型：`List[str]`
+ - 默认：`[]`
+ - 说明：禁用的表情包列表，需填写表情名称的列表，表情名称可以在`data_source.py`文件中查看。若只是临时关闭，可以用下文中的“表情包开关”
+
+#### `petpet_gif_max_size`
+ - 类型：`float`
+ - 默认：`10`
+ - 说明：限制生成的gif的最大体积，单位为`Mb`。若生成的gif体积过大，则先会尝试缩减帧数，其次尝试缩小图片尺寸
+
+#### `petpet_gif_max_frames`
+ - 类型：`int`
+ - 默认：`100`
+ - 说明：限制生成的gif的最大帧数
+
+#### `baidu_trans_appid`
+ - 类型：`str`
+ - 默认：`""`
+ - 说明：百度翻译api相关，可在[百度翻译开放平台](http://api.fanyi.baidu.com)申请
+
+#### `baidu_trans_apikey`
+ - 类型：`str`
+ - 默认：`""`
+ - 说明：百度翻译api相关，可在[百度翻译开放平台](http://api.fanyi.baidu.com)申请
+
+</details>
+
+
 ### 使用
 
 **以下命令需要加[命令前缀](https://v2.nonebot.dev/docs/api/config#Config-command_start) (默认为`/`)，可自行设置为空**
@@ -37,7 +101,7 @@ pip install nonebot_plugin_petpet
 发送“头像表情包”显示下图的列表：
 
 <div align="left">
-  <img src="https://s2.loli.net/2022/08/26/9O3kBNcHWS8hX1e.jpg" width="400" />
+  <img src="https://s2.loli.net/2022/10/01/vN63w9JH2aBQYim.jpg" width="400" />
 </div>
 
 
@@ -46,8 +110,11 @@ pip install nonebot_plugin_petpet
 - 指令 + qq号，如：/爬 123456
 - 指令 + 自己，如：/爬 自己
 - 指令 + 图片，如：/爬 [图片]
+- 回复图片消息 + 指令
 
 前三种触发方式会使用目标qq的头像作为图片
+
+回复图片时需要把指令前的“@”删除
 
 
 #### 表情包开关
@@ -64,6 +131,9 @@ pip install nonebot_plugin_petpet
 
 
 #### 支持的指令
+
+<details>
+<summary>展开/收起</summary>
 
 | 指令 | 效果 | 备注 |
 | --- | --- | --- |
@@ -94,7 +164,7 @@ pip install nonebot_plugin_petpet
 | 问问<br>去问问 | <img src="https://s2.loli.net/2022/02/23/GUyax1BF6q5Hvin.jpg" width="200" /> | 名字为qq昵称，可指定名字 |
 | 舔<br>舔屏<br>prpr | <img src="https://s2.loli.net/2022/03/05/WMHpwygtmN5bdEV.jpg" width="200" /> | 支持gif |
 | 搓 | <img src="https://s2.loli.net/2022/03/09/slRF4ue56xSQzra.gif" width="200" /> |  |
-| 墙纸 | <img src="https://s2.loli.net/2022/03/10/tQRXzLamGyWi24s.jpg" width="200" /> | 支持gif |
+| 墙纸 | <img src="https://s2.loli.net/2022/10/01/wm3pFvEZeUctA4J.gif" width="200" /> |  |
 | 国旗 | <img src="https://s2.loli.net/2022/03/10/p7nwCvgsU3LxBDI.jpg" width="200" /> |  |
 | 交个朋友 | <img src="https://s2.loli.net/2022/03/10/SnmkNrjKuFeZvbA.jpg" width="200" /> | 名字为qq昵称，可指定名字 |
 | 继续干活<br>打工人 | <img src="https://s2.loli.net/2022/04/20/LIak2BsJ9Dd5O7l.jpg" width="200" > |  |
@@ -108,7 +178,7 @@ pip install nonebot_plugin_petpet
 | 典中典 | <img src="https://s2.loli.net/2022/03/18/ikQ1IB6hS4x3EjD.jpg" width="200" > |  |
 | 哈哈镜 | <img src="https://s2.loli.net/2022/03/15/DwRPaErSNZWXGgp.gif" width="200" > |  |
 | 永远爱你 | <img src="https://s2.loli.net/2022/03/15/o6mhWk7crwdepU5.gif" width="200" > |  |
-| 对称 | <img src="https://s2.loli.net/2022/03/15/HXntCy8kc7IRZxp.jpg" width="200" > | 可使用参数“上”、“下”、“左”、“右”指定对称方向 |
+| 对称 | <img src="https://s2.loli.net/2022/03/15/HXntCy8kc7IRZxp.jpg" width="200" > | 可使用参数“上”、“下”、“左”、“右”指定对称方向<br>支持gif |
 | 安全感 | <img src="https://s2.loli.net/2022/03/15/58pPzrgxJNkUYRT.jpg" width="200" > | 可指定描述 |
 | 永远喜欢<br>我永远喜欢 | <img src="https://s2.loli.net/2022/03/15/EpTiUbcoVGCXLkJ.jpg" width="200" > | 图中名字为目标qq昵称<br>可指定名字<br>可指定多个目标叠buff |
 | 采访 | <img src="https://s2.loli.net/2022/03/15/AYpkWEc2BrXhKeU.jpg" width="200" > | 可指定描述 |
@@ -137,9 +207,25 @@ pip install nonebot_plugin_petpet
 | 字符画 | <img src="https://s2.loli.net/2022/07/21/R58eG7mVZWPp1Cy.jpg" width="200" > | 支持gif |
 | 这是我的老婆 | <img src="https://s2.loli.net/2022/08/16/7wPht5rp6sk1ZCq.jpg" width="200" > | 可改为别的称谓<br>如“这是他的老公” |
 | 胡桃平板 | <img src="https://s2.loli.net/2022/08/16/Mc5HvfB6ywqLQiV.jpg" width="200" > | 支持gif |
+| 胡桃放大 | <img src="https://s2.loli.net/2022/10/01/ISotJVp1xOfgvlq.gif" width="200" > | 支持gif |
 | 讲课<br>敲黑板 | <img src="https://s2.loli.net/2022/08/16/VpdIHsteKocgRzP.jpg" width="200" > | 支持gif |
 | 上瘾<br>毒瘾发作 | <img src="https://s2.loli.net/2022/08/26/WAVDFfJB7tH5z3y.jpg" width="200" > | 支持gif |
 | 手枪 | <img src="https://s2.loli.net/2022/08/26/MRO3mqvfbaxkB1t.jpg" width="200" > |  |
 | 高血压 | <img src="https://s2.loli.net/2022/08/26/9qbyN2h38MAkRZE.jpg" width="200" > | 支持gif |
 | 看书 | <img src="https://s2.loli.net/2022/08/26/SeAC86RgDlUvLNY.jpg" width="200" > |  |
 | 遇到困难请拨打 | <img src="https://s2.loli.net/2022/08/26/KWGSf6qErB14uwp.jpg" width="200" > | 可指定一个或两个目标 |
+| 迷惑 | <img src="https://s2.loli.net/2022/10/01/WqfAXNpD8JkVnUH.gif" width="200" > | 支持gif |
+| 打穿<br>打穿屏幕 | <img src="https://s2.loli.net/2022/10/01/ndxBbC1TKeRYv9X.gif" width="200" > | 支持gif |
+| 击剑<br>🤺 | <img src="https://s2.loli.net/2022/10/01/97uZYdFs16CkJhQ.gif" width="200" > |  |
+| 抱大腿 | <img src="https://s2.loli.net/2022/10/01/mivPkLle6qwZQsg.gif" width="200" > |  |
+| 唐可可举牌 | <img src="https://s2.loli.net/2022/10/01/LdGk9MmzYaebFt5.gif" width="200" > |  |
+| 无响应 | <img src="https://s2.loli.net/2022/10/01/vjXnOgcSVLGfdCQ.jpg" width="200" > |  |
+| 抱紧 | <img src="https://s2.loli.net/2022/10/01/vYgl3nRmXuGwqDd.jpg" width="200" > |  |
+
+</details>
+
+
+### 特别感谢
+
+- [FloatTech/ZeroBot-Plugin](https://github.com/FloatTech/ZeroBot-Plugin) 基于 ZeroBot 的 OneBot 插件
+- [Dituon/petpet](https://github.com/Dituon/petpet) Mirai插件 生成各种奇怪的图片
