@@ -8,9 +8,9 @@ from typing import List, Dict, Optional
 from nonebot_plugin_imageutils.fonts import Font
 from nonebot_plugin_imageutils import BuildImage, Text2Image
 
-from .download import load_image
-from .utils import UserInfo, save_gif, make_jpg_or_gif, translate
+from .utils import *
 from .depends import *
+from .download import load_image
 
 
 TEXT_TOO_LONG = "文字太长了哦，改短点再试吧~"
@@ -540,14 +540,15 @@ def twist(img: BuildImage = UserImg(), arg=NoArg()):
 
 
 def wallpaper(img: BuildImage = UserImg(), arg=NoArg()):
-    frame = load_image("wallpaper/0.png")
-
-    def make(img: BuildImage) -> BuildImage:
-        return frame.copy().paste(
-            img.resize((775, 496), keep_ratio=True), (260, 580), below=True
-        )
-
-    return make_jpg_or_gif(img, make, gif_zoom=0.5)
+    img = img.convert("RGBA").resize((515, 383), keep_ratio=True)
+    frames: List[IMG] = []
+    for i in range(8):
+        frames.append(load_image(f"wallpaper/{i}.png").image)
+    for i in range(8, 20):
+        frame = load_image(f"wallpaper/{i}.png")
+        frame.paste(img, (176, -9), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.07)
 
 
 def china_flag(img: BuildImage = UserImg(), arg=NoArg()):
@@ -732,7 +733,7 @@ async def dianzhongdian(img: BuildImage = UserImg(), arg: str = Arg()):
     if not arg:
         return REQUIRE_ARG
 
-    trans = await translate(arg)
+    trans = await translate(arg, lang_to="jp")
     img = img.convert("L").resize_width(500)
     text_img1 = BuildImage.new("RGBA", (500, 60))
     text_img2 = BuildImage.new("RGBA", (500, 35))
@@ -788,8 +789,7 @@ def love_you(img: BuildImage = UserImg(), arg=NoArg()):
 
 
 def symmetric(img: BuildImage = UserImg(), arg: str = Arg(["上", "下", "左", "右"])):
-    img = img.convert("RGBA").resize_width(500)
-    img_w, img_h = img.size
+    img_w, img_h = img.copy().convert("RGBA").resize_width(500).size
 
     Mode = namedtuple(
         "Mode", ["method", "frame_size", "size1", "pos1", "size2", "pos2"]
@@ -837,12 +837,16 @@ def symmetric(img: BuildImage = UserImg(), arg: str = Arg(["上", "下", "左", 
     elif arg == "下":
         mode = modes["bottom"]
 
-    first = img
-    second = img.transpose(mode.method)
-    frame = BuildImage.new("RGBA", mode.frame_size)
-    frame.paste(first.crop(mode.size1), mode.pos1)
-    frame.paste(second.crop(mode.size2), mode.pos2)
-    return frame.save_jpg()
+    def make(img: BuildImage) -> BuildImage:
+        img = img.resize_width(500)
+        first = img
+        second = img.transpose(mode.method)
+        frame = BuildImage.new("RGBA", mode.frame_size)
+        frame.paste(first.crop(mode.size1), mode.pos1)
+        frame.paste(second.crop(mode.size2), mode.pos2)
+        return frame
+
+    return make_jpg_or_gif(img, make)
 
 
 def safe_sense(user: UserInfo = User(), arg: str = Arg()):
@@ -1321,22 +1325,14 @@ def charpic(img: BuildImage = UserImg(), arg=NoArg()):
     return make_jpg_or_gif(img, make)
 
 
-def mywife(
-    user: UserInfo = User(),
-    ta: str = RegexArg("ta"),
-    name: str = RegexArg("name"),
-    arg=NoArg(),
-):
-    ta = ta.strip() or "我"
-    name = name.strip() or "老婆"
-
+def mywife(user: UserInfo = User(), arg=NoArg()):
     img = user.img.convert("RGBA").resize_width(400)
     img_w, img_h = img.size
     frame = BuildImage.new("RGBA", (650, img_h + 500), "white")
     frame.paste(img, (int(325 - img_w / 2), 105), alpha=True)
 
     try:
-        text = f"如果你的{name}长这样"
+        text = f"如果你的老婆长这样"
         frame.draw_text(
             (27, 12, 27 + 596, 12 + 79),
             text,
@@ -1346,7 +1342,7 @@ def mywife(
             lines_align="center",
             weight="bold",
         )
-        text = f"那么这就不是你的{name}\n这是{ta}的{name}"
+        text = f"那么这就不是你的老婆\n这是我的老婆"
         frame.draw_text(
             (27, img_h + 120, 27 + 593, img_h + 120 + 135),
             text,
@@ -1355,7 +1351,7 @@ def mywife(
             allow_wrap=True,
             weight="bold",
         )
-        text = f"滚去找你\n自己的{name}去"
+        text = f"滚去找你\n自己的老婆去"
         frame.draw_text(
             (27, img_h + 295, 27 + 374, img_h + 295 + 135),
             text,
@@ -1383,6 +1379,29 @@ def walnutpad(img: BuildImage = UserImg(), arg=NoArg()):
         )
 
     return make_jpg_or_gif(img, make)
+
+
+def walnut_zoom(img: BuildImage = UserImg(), arg=NoArg()):
+    # fmt: off
+    locs = (
+        (-222, 30, 695, 430), (-212, 30, 695, 430), (0, 30, 695, 430), (41, 26, 695, 430),
+        (-100, -67, 922, 570), (-172, -113, 1059, 655), (-273, -192, 1217, 753)
+    ) # (-47, -12, 801, 495), 
+    seq = [0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 6, 6, 6, 6]
+    # fmt: on
+
+    def maker(i: int) -> Maker:
+        def make(img: BuildImage) -> BuildImage:
+            frame = load_image(f"walnut_zoom/{i}.png")
+            x, y, w, h = locs[seq[i]]
+            img = img.resize((w, h), keep_ratio=True).rotate(4.2, expand=True)
+            frame.paste(img, (x, y), below=True)
+            return frame
+
+        return make
+
+    functions = [maker(i) for i in range(24)]
+    return make_gif_or_combined_gif(img, functions, 0.2)
 
 
 def teach(img: BuildImage = UserImg(), arg: str = Arg()):
@@ -1506,13 +1525,144 @@ def call_110(
 
 
 def confuse(img: BuildImage = UserImg(), arg=NoArg()):
-    img = img.convert("RGBA").resize((500, 500), keep_ratio=True)
+    def maker(i: int) -> Maker:
+        def make(img: BuildImage) -> BuildImage:
+            img = img.resize_width(380)
+            frame = load_image(f"confuse/{i}.png").resize(img.size, keep_ratio=True)
+            frame.paste(img, below=True)
+            return frame
+
+        return make
+
+    functions = [maker(i) for i in range(100)]
+    return make_gif_or_combined_gif(img, functions, 0.015)
+
+
+def hit_screen(img: BuildImage = UserImg(), arg=NoArg()):
+    params = (
+        (((1, 10), (138, 1), (140, 119), (7, 154)), (32, 37)),
+        (((1, 10), (138, 1), (140, 121), (7, 154)), (32, 37)),
+        (((1, 10), (138, 1), (139, 125), (10, 159)), (32, 37)),
+        (((1, 12), (136, 1), (137, 125), (8, 159)), (34, 37)),
+        (((1, 9), (137, 1), (139, 122), (9, 154)), (35, 41)),
+        (((1, 8), (144, 1), (144, 123), (12, 155)), (30, 45)),
+        (((1, 8), (140, 1), (141, 121), (10, 155)), (29, 49)),
+        (((1, 9), (140, 1), (139, 118), (10, 153)), (27, 53)),
+        (((1, 7), (144, 1), (145, 117), (13, 153)), (19, 57)),
+        (((1, 7), (144, 1), (143, 116), (13, 153)), (19, 57)),
+        (((1, 8), (139, 1), (141, 119), (12, 154)), (19, 55)),
+        (((1, 13), (140, 1), (143, 117), (12, 156)), (16, 57)),
+        (((1, 10), (138, 1), (142, 117), (11, 149)), (14, 61)),
+        (((1, 10), (141, 1), (148, 125), (13, 153)), (11, 57)),
+        (((1, 12), (141, 1), (147, 130), (16, 150)), (11, 60)),
+        (((1, 15), (165, 1), (175, 135), (1, 171)), (-6, 46)),
+    )
+
+    def maker(i: int) -> Maker:
+        def make(img: BuildImage) -> BuildImage:
+            img = img.resize((140, 120), keep_ratio=True)
+            frame = load_image(f"hit_screen/{i}.png")
+            if 6 <= i < 22:
+                points, pos = params[i - 6]
+                frame.paste(img.perspective(points), pos, below=True)
+            return frame
+
+        return make
+
+    functions = [maker(i) for i in range(29)]
+    return make_gif_or_combined_gif(img, functions, 0.2)
+
+
+def fencing(
+    user_imgs: List[BuildImage] = UserImgs(1, 2),
+    sender_img: BuildImage = SenderImg(),
+    arg=NoArg(),
+):
+    if len(user_imgs) >= 2:
+        self_img = user_imgs[0]
+        user_img = user_imgs[1]
+    else:
+        self_img = sender_img
+        user_img = user_imgs[0]
+    self_head = self_img.convert("RGBA").circle().resize((27, 27))
+    user_head = user_img.convert("RGBA").circle().resize((27, 27))
+    # fmt: off
+    user_locs = [
+        (57, 4), (55, 5), (58, 7), (57, 5), (53, 8), (54, 9),
+        (64, 5), (66, 8), (70, 9), (73, 8), (81, 10), (77, 10),
+        (72, 4), (79, 8), (50, 8), (60, 7), (67, 6), (60, 6), (50, 9)
+    ]
+    self_locs = [
+        (10, 6), (3, 6), (32, 7), (22, 7), (13, 4), (21, 6),
+        (30, 6), (22, 2), (22, 3), (26, 8), (23, 8), (27, 10),
+        (30, 9), (17, 6), (12, 8), (11, 7), (8, 6), (-2, 10), (4, 9)
+    ]
+    # fmt: on
     frames: List[IMG] = []
-    for i in range(100):
-        mask = load_image(f"confuse/{i}.png").resize(img.size, keep_ratio=True)
-        frame = BuildImage.new("RGBA", img.size, (255, 255, 255, 0))
-        avatar = img
-        frame.paste(avatar)
-        frame.paste(mask, alpha=True)
+    for i in range(19):
+        frame = load_image(f"fencing/{i}.png")
+        frame.paste(user_head, user_locs[i], alpha=True)
+        frame.paste(self_head, self_locs[i], alpha=True)
         frames.append(frame.image)
-    return save_gif(frames, 0.015)
+    return save_gif(frames, 0.05)
+
+
+def hug_leg(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square()
+    locs = [
+        (50, 73, 68, 92),
+        (58, 60, 62, 95),
+        (65, 10, 67, 118),
+        (61, 20, 77, 97),
+        (55, 44, 65, 106),
+        (66, 85, 60, 98),
+    ]
+    frames: List[IMG] = []
+    for i in range(6):
+        frame = load_image(f"hug_leg/{i}.png")
+        x, y, w, h = locs[i]
+        frame.paste(img.resize((w, h)), (x, y), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.06)
+
+
+def tankuku_holdsign(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").resize((300, 230), keep_ratio=True)
+    params = (
+        (((0, 46), (320, 0), (350, 214), (38, 260)), (68, 91)),
+        (((18, 0), (328, 28), (298, 227), (0, 197)), (184, 77)),
+        (((15, 0), (294, 28), (278, 216), (0, 188)), (194, 65)),
+        (((14, 0), (279, 27), (262, 205), (0, 178)), (203, 55)),
+        (((14, 0), (270, 25), (252, 195), (0, 170)), (209, 49)),
+        (((15, 0), (260, 25), (242, 186), (0, 164)), (215, 41)),
+        (((10, 0), (245, 21), (230, 180), (0, 157)), (223, 35)),
+        (((13, 0), (230, 21), (218, 168), (0, 147)), (231, 25)),
+        (((13, 0), (220, 23), (210, 167), (0, 140)), (238, 21)),
+        (((27, 0), (226, 46), (196, 182), (0, 135)), (254, 13)),
+        (((27, 0), (226, 46), (196, 182), (0, 135)), (254, 13)),
+        (((27, 0), (226, 46), (196, 182), (0, 135)), (254, 13)),
+        (((0, 35), (200, 0), (224, 133), (25, 169)), (175, 9)),
+        (((0, 35), (200, 0), (224, 133), (25, 169)), (195, 17)),
+        (((0, 35), (200, 0), (224, 133), (25, 169)), (195, 17)),
+    )
+    frames: List[IMG] = []
+    for i in range(15):
+        points, pos = params[i]
+        frame = load_image(f"tankuku_holdsign/{i}.png")
+        frame.paste(img.perspective(points), pos, below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.2)
+
+
+def no_response(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").resize((1050, 783), keep_ratio=True)
+    frame = load_image("no_response/0.png")
+    frame.paste(img, (0, 581), below=True)
+    return frame.save_jpg()
+
+
+def hold_tight(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").resize((159, 171), keep_ratio=True)
+    frame = load_image("hold_tight/0.png")
+    frame.paste(img, (113, 205), below=True)
+    return frame.save_jpg()
