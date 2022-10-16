@@ -101,7 +101,7 @@ pip install nonebot_plugin_petpet
 发送“头像表情包”显示下图的列表：
 
 <div align="left">
-  <img src="https://s2.loli.net/2022/10/01/vN63w9JH2aBQYim.jpg" width="400" />
+  <img src="https://s2.loli.net/2022/10/15/CiHyoqgI6eKSW9p.jpg" width="400" />
 </div>
 
 
@@ -115,6 +115,15 @@ pip install nonebot_plugin_petpet
 前三种触发方式会使用目标qq的头像作为图片
 
 回复图片时需要把指令前的“@”删除
+
+
+#### 随机表情
+
+随机表情 + @user/qq号/自己/图片
+
+如：`随机表情 自己`
+
+会在未禁用的表情中随机选取一个制作表情包
 
 
 #### 表情包开关
@@ -144,11 +153,13 @@ pip install nonebot_plugin_petpet
 | 顶<br>玩 | <img src="https://s2.loli.net/2022/08/16/WVotKxjqupdCJAS.gif" width="200" /> |  |
 | 拍 | <img src="https://s2.loli.net/2022/02/23/5mv6pFJMNtzHhcl.gif" width="200" /> |  |
 | 撕 | <img src="https://s2.loli.net/2022/05/29/FDcam9ROPkqvwxH.jpg" width="200" > |  |
+| 怒撕 | <img src="https://s2.loli.net/2022/10/11/NepC3ETugIaWnHs.jpg" width="200" > |  |
 | 丢<br>扔 | <img src="https://s2.loli.net/2022/02/23/LlDrSGYdpcqEINu.jpg" width="200" /> |  |
 | 抛<br>掷 | <img src="https://s2.loli.net/2022/03/10/W8X6cGZS5VMDOmh.gif" width="200" /> |  |
 | 爬 | <img src="https://s2.loli.net/2022/02/23/hfmAToDuF2actC1.jpg" width="200" /> | 默认为随机选取一张爬表情<br>可使用数字指定特定表情<br>如：爬 13 自己 |
 | 精神支柱 | <img src="https://s2.loli.net/2022/02/23/WwjNmiz4JXbuE1B.jpg" width="200" /> |  |
 | 一直 | <img src="https://s2.loli.net/2022/02/23/dAf9Z3kMDwYcRWv.gif" width="200" /> | 支持gif |
+| 一直一直 | <img src="https://s2.loli.net/2022/10/15/hn5Q4jm29pXNsrL.gif" width="200" /> | 支持gif |
 | 加载中 | <img src="https://s2.loli.net/2022/02/23/751Oudrah6gBsWe.gif" width="200" /> | 支持gif |
 | 转 | <img src="https://s2.loli.net/2022/02/23/HoZaCcDIRgs784Y.gif" width="200" /> |  |
 | 小天使 | <img src="https://s2.loli.net/2022/02/23/ZgD1WSMRxLIymCq.jpg" width="200" /> | 图中名字为目标qq昵称<br>可指定名字，如：小天使 meetwq 自己 |
@@ -205,7 +216,7 @@ pip install nonebot_plugin_petpet
 | 复读 | <img src="https://s2.loli.net/2022/08/16/E6vgRCt3MSLfAWU.gif" width="200" > | 复读内容默认为“救命啊”<br>可指定多个目标 |
 | 防诱拐 | <img src="https://s2.loli.net/2022/07/21/ve6lcYaiV4wfhHg.jpg" width="200" > |  |
 | 字符画 | <img src="https://s2.loli.net/2022/07/21/R58eG7mVZWPp1Cy.jpg" width="200" > | 支持gif |
-| 这是我的老婆 | <img src="https://s2.loli.net/2022/08/16/7wPht5rp6sk1ZCq.jpg" width="200" > | 可改为别的称谓<br>如“这是他的老公” |
+| 我老婆 | <img src="https://s2.loli.net/2022/08/16/7wPht5rp6sk1ZCq.jpg" width="200" > |  |
 | 胡桃平板 | <img src="https://s2.loli.net/2022/08/16/Mc5HvfB6ywqLQiV.jpg" width="200" > | 支持gif |
 | 胡桃放大 | <img src="https://s2.loli.net/2022/10/01/ISotJVp1xOfgvlq.gif" width="200" > | 支持gif |
 | 讲课<br>敲黑板 | <img src="https://s2.loli.net/2022/08/16/VpdIHsteKocgRzP.jpg" width="200" > | 支持gif |
@@ -221,6 +232,12 @@ pip install nonebot_plugin_petpet
 | 唐可可举牌 | <img src="https://s2.loli.net/2022/10/01/LdGk9MmzYaebFt5.gif" width="200" > |  |
 | 无响应 | <img src="https://s2.loli.net/2022/10/01/vjXnOgcSVLGfdCQ.jpg" width="200" > |  |
 | 抱紧 | <img src="https://s2.loli.net/2022/10/01/vYgl3nRmXuGwqDd.jpg" width="200" > |  |
+| 看扁 | <img src="https://s2.loli.net/2022/10/08/kAHs6GYnmRh28WB.jpg" width="200" > | 支持gif<br>可指定描述<br>可指定缩放倍率，默认为2<br>如：看扁 3 自己 |
+| 看图标 | <img src="https://s2.loli.net/2022/10/08/Ek8Vu6eFyQKJnos.jpg" width="200" > | 支持gif<br>可指定描述 |
+| 舰长 | <img src="https://s2.loli.net/2022/10/11/8kPgVo6yzWMhfqU.jpg" width="200" > | 可指定1~5个目标 |
+| 急急国王 | <img src="https://s2.loli.net/2022/10/11/RqFP8Gtr2CQmSTU.jpg" width="200" > | 可指定方块中的字和描述<br>可用多个图片替代方块 |
+| 不文明 | <img src="https://s2.loli.net/2022/10/15/XBqrksgCcAx1YaH.jpg" width="200" > |  |
+| 一起 | <img src="https://s2.loli.net/2022/10/15/Ujt7avy9d5TfOlW.jpg" width="200" > |  |
 
 </details>
 

@@ -1,6 +1,5 @@
-from .utils import Meme
-from .functions import *
 from .config import petpet_config
+from .functions import *
 
 memes = [
     Meme("universal", universal, ("万能表情", "空白表情")),
@@ -10,11 +9,13 @@ memes = [
     Meme("play", play, ("顶", "玩")),
     Meme("pat", pat, ("拍",)),
     Meme("rip", rip, ("撕",)),
+    Meme("rip_angrily", rip_angrily, ("怒撕",)),
     Meme("throw", throw, ("丢", "扔")),
     Meme("throw_gif", throw_gif, ("抛", "掷")),
     Meme("crawl", crawl, ("爬",)),
     Meme("support", support, ("精神支柱",)),
     Meme("always", always, ("一直",)),
+    Meme("always", always_always, ("一直一直",)),
     Meme("loading", loading, ("加载中",)),
     Meme("turn", turn, ("转",)),
     Meme("littleangel", littleangel, ("小天使",)),
@@ -87,6 +88,12 @@ memes = [
     Meme("tankuku_holdsign", tankuku_holdsign, ("唐可可举牌",)),
     Meme("no_response", no_response, ("无响应",)),
     Meme("hold_tight", hold_tight, ("抱紧",)),
+    Meme("look_flat", look_flat, ("看扁",)),
+    Meme("look_this_icon", look_this_icon, ("看图标",)),
+    Meme("captain", captain, ("舰长",)),
+    Meme("jiji_king", jiji_king, ("急急国王",)),
+    Meme("incivilization", incivilization, ("不文明",)),
+    Meme("together", together, ("一起",)),
 ]
 
 memes = [meme for meme in memes if meme.name not in petpet_config.petpet_disabled_list]

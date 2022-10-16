@@ -1,8 +1,8 @@
 import math
+import random
 from io import BytesIO
-from typing import List, Union
 from PIL.Image import Image as IMG
-from typing_extensions import Literal
+from typing import Any, List, Literal, Union
 
 from nonebot.params import Depends
 from nonebot.utils import run_sync
@@ -11,6 +11,7 @@ from nonebot.typing import T_Handler
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata
+from nonebot.dependencies import Dependent
 from nonebot import require, on_command, on_message
 from nonebot.adapters.onebot.v11 import (
     Message,
@@ -28,6 +29,7 @@ require("nonebot_plugin_imageutils")
 from nonebot_plugin_imageutils import BuildImage, Text2Image
 
 from .utils import Meme
+from .config import Config
 from .data_source import memes
 from .depends import split_msg, regex
 from .manager import meme_manager, ActionResult, MemeMode
@@ -37,11 +39,12 @@ from .manager import meme_manager, ActionResult, MemeMode
 #     name="头像表情包",
 #     description="摸头等头像相关表情制作",
 #     usage="触发方式：指令 + @user/qq/自己/图片\n发送“头像表情包”查看支持的指令",
+#     config=Config,
 #     extra={
 #         "unique_name": "petpet",
 #         "example": "摸 @小Q\n摸 114514\n摸 自己\n摸 [图片]",
 #         "author": "meetwq <meetwq@gmail.com>",
-#         "version": "0.3.12",
+#         "version": "0.3.15",
 #     },
 # )
 
@@ -245,6 +248,20 @@ def create_matchers():
             block=False,
             priority=12,
         ).append_handler(handler(meme), parameterless=[split_msg()])
+
+    def random_handler() -> T_Handler:
+        def handle(matcher: Matcher):
+            random_meme = random.choice([meme for meme in memes if check_flag(meme)])
+            handler_ = Dependent[Any].parse(
+                call=handler(random_meme),
+                parameterless=[split_msg()],
+                allow_types=matcher.HANDLER_PARAM_TYPES,
+            )
+            matcher.handlers.append(handler_)
+
+        return handle
+
+    on_message(regex("随机表情"), block=False, priority=12).append_handler(random_handler())
 
 
 create_matchers()
