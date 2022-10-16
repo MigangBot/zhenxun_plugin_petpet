@@ -92,6 +92,18 @@
         "hash": "d5dd1ea44908952885ff14a283f99695"
     },
     {
+        "path": "images/captain/0.png",
+        "hash": "f6cca0f44aa54c721f8b172f8ebb7f40"
+    },
+    {
+        "path": "images/captain/1.png",
+        "hash": "2885566e47ef4fb40560149c795dca7f"
+    },
+    {
+        "path": "images/captain/2.png",
+        "hash": "e230240d0929b774a985a301962d36b5"
+    },
+    {
         "path": "images/china_flag/0.png",
         "hash": "aa64adae6f7ede5bceafe81a5273cafc"
     },
@@ -1260,12 +1272,20 @@
         "hash": "3d12cc8ad857617351d2961790e031af"
     },
     {
+        "path": "images/incivilization/0.png",
+        "hash": "352c9534c4ff182174b0b29e7ff7df42"
+    },
+    {
         "path": "images/interview/huaji.png",
         "hash": "3bb5ff24a83544995edab765c837bec3"
     },
     {
         "path": "images/interview/microphone.png",
         "hash": "34775a82e4b8b7df44d2cf37a6e16ea5"
+    },
+    {
+        "path": "images/jiji_king/0.png",
+        "hash": "9fa0daa0d9ce4756d09f405ed982861a"
     },
     {
         "path": "images/jiujiu/0.png",
@@ -1390,6 +1410,10 @@
     {
         "path": "images/loading/icon.png",
         "hash": "e85c326ab5c4ca55589761be7b7e990d"
+    },
+    {
+        "path": "images/look_this_icon/nmsl.png",
+        "hash": "4f37b38d2a14cbe368b4e427c23aa28d"
     },
     {
         "path": "images/love_you/0.png",
@@ -1788,6 +1812,10 @@
         "hash": "91cfac98b3e2857988c727c03ce76418"
     },
     {
+        "path": "images/rip_angrily/0.png",
+        "hash": "0c58878dfbe96bdc8a4f8cb3a5d9ae79"
+    },
+    {
         "path": "images/roll/0.png",
         "hash": "4b7bd23b3f9d4c2ab7d36885a6edf21a"
     },
@@ -2098,6 +2126,10 @@
     {
         "path": "images/tightly/9.png",
         "hash": "23e00f03f6a6a883f2550b91646e9fd7"
+    },
+    {
+        "path": "images/together/0.png",
+        "hash": "ed562d9d1bf0d345ce83b1b7a83524ac"
     },
     {
         "path": "images/twist/0.png",
