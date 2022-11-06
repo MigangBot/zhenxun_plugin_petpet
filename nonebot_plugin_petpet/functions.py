@@ -349,11 +349,8 @@ def turn(img: BuildImage = UserImg(), arg=NoArg()):
 
 
 def littleangel(user: UserInfo = User(), arg: str = Arg()):
-    img = user.img.convert("RGBA").resize_width(500)
-    img_w, img_h = img.size
+    img_w, img_h = user.img.convert("RGBA").resize_width(500).size
     frame = BuildImage.new("RGBA", (600, img_h + 230), "white")
-    frame.paste(img, (int(300 - img_w / 2), 110), alpha=True)
-
     text = "非常可爱！简直就是小天使"
     frame.draw_text(
         (10, img_h + 120, 590, img_h + 185), text, max_fontsize=48, weight="bold"
@@ -374,7 +371,11 @@ def littleangel(user: UserInfo = User(), arg: str = Arg()):
     except ValueError:
         return NAME_TOO_LONG
 
-    return frame.save_jpg()
+    def make(img: BuildImage) -> BuildImage:
+        img = img.resize_width(500)
+        return frame.copy().paste(img, (int(300 - img_w / 2), 110), alpha=True)
+
+    return make_jpg_or_gif(user.img, make)
 
 
 def dont_touch(img: BuildImage = UserImg(), arg=NoArg()):
@@ -1380,7 +1381,7 @@ def mywife(user: UserInfo = User(), arg=NoArg()):
             (27, 12, 27 + 596, 12 + 79),
             text,
             max_fontsize=100,
-            min_fontsize=50,
+            min_fontsize=30,
             allow_wrap=True,
             lines_align="center",
             weight="bold",
@@ -1390,7 +1391,7 @@ def mywife(user: UserInfo = User(), arg=NoArg()):
             (27, img_h + 120, 27 + 593, img_h + 120 + 135),
             text,
             max_fontsize=100,
-            min_fontsize=50,
+            min_fontsize=30,
             allow_wrap=True,
             weight="bold",
         )
@@ -1399,7 +1400,7 @@ def mywife(user: UserInfo = User(), arg=NoArg()):
             (27, img_h + 295, 27 + 374, img_h + 295 + 135),
             text,
             max_fontsize=100,
-            min_fontsize=50,
+            min_fontsize=30,
             allow_wrap=True,
             lines_align="center",
             weight="bold",
@@ -1429,9 +1430,8 @@ def walnut_zoom(img: BuildImage = UserImg(), arg=NoArg()):
     locs = (
         (-222, 30, 695, 430), (-212, 30, 695, 430), (0, 30, 695, 430), (41, 26, 695, 430),
         (-100, -67, 922, 570), (-172, -113, 1059, 655), (-273, -192, 1217, 753)
-    )  # (-47, -12, 801, 495),
+    )
     seq = [0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 6, 6, 6, 6]
-
     # fmt: on
 
     def maker(i: int) -> Maker:
@@ -1909,3 +1909,28 @@ def together(user: UserInfo = User(), arg: str = Arg()):
     except ValueError:
         return TEXT_TOO_LONG
     return frame.save_jpg()
+
+
+def wave(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").resize_width(500)
+    img_w, img_h = img.size
+    period = 50
+    amp = 5
+    frame_num = 4
+    phase = 0
+    frames: List[IMG] = []
+    sin = lambda x: amp * math.sin(2 * math.pi / period * (x + phase))
+    for _ in range(frame_num):
+        frame = img.copy()
+        for i in range(img_w):
+            for j in range(img_h):
+                dx = int(sin(i))
+                dy = int(sin(j))
+                if 0 <= i + dx < img_w and 0 <= j + dy < img_h:
+                    frame.image.putpixel((i, j), img.image.getpixel((i + dx, j + dy)))
+                else:
+                    frame.image.putpixel((i, j), 0)
+        frame = frame.resize_canvas((img_w - amp * 2, img_h - amp * 2))
+        frames.append(frame.image)
+        phase += period / frame_num
+    return save_gif(frames, 0.01)

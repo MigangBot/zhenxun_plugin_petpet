@@ -15,7 +15,7 @@ memes = [
     Meme("crawl", crawl, ("爬",)),
     Meme("support", support, ("精神支柱",)),
     Meme("always", always, ("一直",)),
-    Meme("always", always_always, ("一直一直",)),
+    Meme("always_always", always_always, ("一直一直",)),
     Meme("loading", loading, ("加载中",)),
     Meme("turn", turn, ("转",)),
     Meme("littleangel", littleangel, ("小天使",)),
@@ -94,6 +94,7 @@ memes = [
     Meme("jiji_king", jiji_king, ("急急国王",)),
     Meme("incivilization", incivilization, ("不文明",)),
     Meme("together", together, ("一起",)),
+    Meme("wave", wave, ("波纹",)),
 ]
 
 memes = [meme for meme in memes if meme.name not in petpet_config.petpet_disabled_list]
