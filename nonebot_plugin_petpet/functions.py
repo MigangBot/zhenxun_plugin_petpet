@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
 
 from nonebot_plugin_imageutils import Text2Image
 from nonebot_plugin_imageutils.fonts import Font
+from nonebot_plugin_imageutils.gradient import LinearGradient, ColorStop
 
 from .utils import *
 from .depends import *
@@ -309,8 +310,9 @@ def always_always(img: BuildImage = UserImg(), arg=NoArg()):
 
         return make
 
-    functions = [maker(i) for i in range(frame_num)]
-    return make_gif_or_combined_gif(img, functions, 0.1)
+    return make_gif_or_combined_gif(
+        img, maker, frame_num, 0.1, FrameAlignPolicy.extend_loop
+    )
 
 
 def loading(img: BuildImage = UserImg(), arg=NoArg()):
@@ -492,11 +494,13 @@ def ask(user: UserInfo = User(), arg: str = Arg()):
     img = user.img.resize_width(640)
     img_w, img_h = img.size
     gradient_h = 150
-    gradient = BuildImage.new("RGBA", (img_w, gradient_h)).gradient_color(
-        (0, 0, 0, 220), (0, 0, 0, 30)
+    gradient = LinearGradient(
+        (0, 0, 0, gradient_h),
+        [ColorStop(0, (0, 0, 0, 220)), ColorStop(1, (0, 0, 0, 30))],
     )
+    gradient_img = gradient.create_image((img_w, gradient_h))
     mask = BuildImage.new("RGBA", img.size)
-    mask.paste(gradient, (0, img_h - gradient_h), alpha=True)
+    mask.paste(gradient_img, (0, img_h - gradient_h), alpha=True)
     mask = mask.filter(ImageFilter.GaussianBlur(radius=3))
     img.paste(mask, alpha=True)
 
@@ -728,7 +732,7 @@ def paint(img: BuildImage = UserImg(), arg=NoArg()):
 
 
 def shock(img: BuildImage = UserImg(), arg=NoArg()):
-    img = img.convert("RGBA").resize((300, 300))
+    img = img.convert("RGBA").square().resize((300, 300))
     frames: List[IMG] = []
     for i in range(30):
         frames.append(
@@ -833,7 +837,7 @@ def love_you(img: BuildImage = UserImg(), arg=NoArg()):
 
 
 def symmetric(img: BuildImage = UserImg(), arg: str = Arg(["上", "下", "左", "右"])):
-    img_w, img_h = img.copy().convert("RGBA").resize_width(500).size
+    img_w, img_h = img.size
 
     Mode = namedtuple(
         "Mode", ["method", "frame_size", "size1", "pos1", "size2", "pos2"]
@@ -882,7 +886,6 @@ def symmetric(img: BuildImage = UserImg(), arg: str = Arg(["上", "下", "左", 
         mode = modes["bottom"]
 
     def make(img: BuildImage) -> BuildImage:
-        img = img.resize_width(500)
         first = img
         second = img.transpose(mode.method)
         frame = BuildImage.new("RGBA", mode.frame_size)
@@ -890,7 +893,7 @@ def symmetric(img: BuildImage = UserImg(), arg: str = Arg(["上", "下", "左", 
         frame.paste(second.crop(mode.size2), mode.pos2)
         return frame
 
-    return make_jpg_or_gif(img, make)
+    return make_jpg_or_gif(img, make, keep_transparency=True)
 
 
 def safe_sense(user: UserInfo = User(), arg: str = Arg()):
@@ -1375,38 +1378,35 @@ def mywife(user: UserInfo = User(), arg=NoArg()):
     frame = BuildImage.new("RGBA", (650, img_h + 500), "white")
     frame.paste(img, (int(325 - img_w / 2), 105), alpha=True)
 
-    try:
-        text = f"如果你的老婆长这样"
-        frame.draw_text(
-            (27, 12, 27 + 596, 12 + 79),
-            text,
-            max_fontsize=100,
-            min_fontsize=30,
-            allow_wrap=True,
-            lines_align="center",
-            weight="bold",
-        )
-        text = f"那么这就不是你的老婆\n这是我的老婆"
-        frame.draw_text(
-            (27, img_h + 120, 27 + 593, img_h + 120 + 135),
-            text,
-            max_fontsize=100,
-            min_fontsize=30,
-            allow_wrap=True,
-            weight="bold",
-        )
-        text = f"滚去找你\n自己的老婆去"
-        frame.draw_text(
-            (27, img_h + 295, 27 + 374, img_h + 295 + 135),
-            text,
-            max_fontsize=100,
-            min_fontsize=30,
-            allow_wrap=True,
-            lines_align="center",
-            weight="bold",
-        )
-    except ValueError:
-        return NAME_TOO_LONG
+    text = "如果你的老婆长这样"
+    frame.draw_text(
+        (27, 12, 27 + 596, 12 + 79),
+        text,
+        max_fontsize=70,
+        min_fontsize=30,
+        allow_wrap=True,
+        lines_align="center",
+        weight="bold",
+    )
+    text = "那么这就不是你的老婆\n这是我的老婆"
+    frame.draw_text(
+        (27, img_h + 120, 27 + 593, img_h + 120 + 135),
+        text,
+        max_fontsize=70,
+        min_fontsize=30,
+        allow_wrap=True,
+        weight="bold",
+    )
+    text = "滚去找你\n自己的老婆去"
+    frame.draw_text(
+        (27, img_h + 295, 27 + 374, img_h + 295 + 135),
+        text,
+        max_fontsize=70,
+        min_fontsize=30,
+        allow_wrap=True,
+        lines_align="center",
+        weight="bold",
+    )
 
     img_point = load_image("mywife/1.png").resize_width(200)
     frame.paste(img_point, (421, img_h + 270))
@@ -1444,8 +1444,7 @@ def walnut_zoom(img: BuildImage = UserImg(), arg=NoArg()):
 
         return make
 
-    functions = [maker(i) for i in range(24)]
-    return make_gif_or_combined_gif(img, functions, 0.2)
+    return make_gif_or_combined_gif(img, maker, 24, 0.2, FrameAlignPolicy.extend_last)
 
 
 def teach(img: BuildImage = UserImg(), arg: str = Arg()):
@@ -1569,17 +1568,21 @@ def call_110(
 
 
 def confuse(img: BuildImage = UserImg(), arg=NoArg()):
+    img_w = min(img.width, 500)
+
     def maker(i: int) -> Maker:
         def make(img: BuildImage) -> BuildImage:
-            img = img.resize_width(380)
+            img = img.resize_width(img_w)
             frame = load_image(f"confuse/{i}.png").resize(img.size, keep_ratio=True)
-            frame.paste(img, below=True)
-            return frame
+            bg = BuildImage.new("RGB", img.size, "white")
+            bg.paste(img, alpha=True).paste(frame, alpha=True)
+            return bg
 
         return make
 
-    functions = [maker(i) for i in range(100)]
-    return make_gif_or_combined_gif(img, functions, 0.015)
+    return make_gif_or_combined_gif(
+        img, maker, 100, 0.02, FrameAlignPolicy.extend_loop, input_based=True
+    )
 
 
 def hit_screen(img: BuildImage = UserImg(), arg=NoArg()):
@@ -1613,8 +1616,7 @@ def hit_screen(img: BuildImage = UserImg(), arg=NoArg()):
 
         return make
 
-    functions = [maker(i) for i in range(29)]
-    return make_gif_or_combined_gif(img, functions, 0.2)
+    return make_gif_or_combined_gif(img, maker, 29, 0.2, FrameAlignPolicy.extend_first)
 
 
 def fencing(
@@ -1912,25 +1914,90 @@ def together(user: UserInfo = User(), arg: str = Arg()):
 
 
 def wave(img: BuildImage = UserImg(), arg=NoArg()):
-    img = img.convert("RGBA").resize_width(500)
-    img_w, img_h = img.size
-    period = 50
-    amp = 5
-    frame_num = 4
+    img_w = min(max(img.width, 360), 720)
+    period = img_w / 6
+    amp = img_w / 60
+    frame_num = 8
     phase = 0
+    sin = lambda x: amp * math.sin(2 * math.pi / period * (x + phase)) / 2
+
+    def maker(i: int) -> Maker:
+        def make(img: BuildImage) -> BuildImage:
+            img = img.resize_width(img_w)
+            img_h = img.height
+            frame = img.copy()
+            for i in range(img_w):
+                for j in range(img_h):
+                    dx = int(sin(i) * (img_h - j) / img_h)
+                    dy = int(sin(j) * j / img_h)
+                    if 0 <= i + dx < img_w and 0 <= j + dy < img_h:
+                        frame.image.putpixel(
+                            (i, j), img.image.getpixel((i + dx, j + dy))
+                        )
+
+            frame = frame.resize_canvas((int(img_w - amp), int(img_h - amp)))
+            nonlocal phase
+            phase += period / frame_num
+            return frame
+
+        return make
+
+    return make_gif_or_combined_gif(
+        img, maker, frame_num, 0.01, FrameAlignPolicy.extend_loop
+    )
+
+
+def rise_dead(img: BuildImage = UserImg(), arg=NoArg()):
+    locs = [
+        ((81, 55), ((0, 2), (101, 0), (103, 105), (1, 105))),
+        ((74, 49), ((0, 3), (104, 0), (106, 108), (1, 108))),
+        ((-66, 36), ((0, 0), (182, 5), (184, 194), (1, 185))),
+        ((-231, 55), ((0, 0), (259, 4), (276, 281), (13, 278))),
+    ]
+    img = img.convert("RGBA").square().resize((150, 150))
+    imgs = [img.perspective(points) for _, points in locs]
     frames: List[IMG] = []
-    sin = lambda x: amp * math.sin(2 * math.pi / period * (x + phase))
-    for _ in range(frame_num):
-        frame = img.copy()
-        for i in range(img_w):
-            for j in range(img_h):
-                dx = int(sin(i))
-                dy = int(sin(j))
-                if 0 <= i + dx < img_w and 0 <= j + dy < img_h:
-                    frame.image.putpixel((i, j), img.image.getpixel((i + dx, j + dy)))
-                else:
-                    frame.image.putpixel((i, j), 0)
-        frame = frame.resize_canvas((img_w - amp * 2, img_h - amp * 2))
+    for i in range(34):
+        frame = load_image(f"rise_dead/{i}.png")
+        if i <= 28:
+            idx = 0 if i <= 25 else i - 25
+            x, y = locs[idx][0]
+            if i % 2 == 1:
+                x += 1
+                y -= 1
+            frame.paste(imgs[idx], (x, y), below=True)
         frames.append(frame.image)
-        phase += period / frame_num
-    return save_gif(frames, 0.01)
+    return save_gif(frames, 0.15)
+
+
+def kirby_hammer(img: BuildImage = UserImg(), arg: str = Arg(["圆"])):
+    # fmt: off
+    positions = [
+        (318, 163), (319, 173), (320, 183), (317, 193), (312, 199), 
+        (297, 212), (289, 218), (280, 224), (278, 223), (278, 220), 
+        (280, 215), (280, 213), (280, 210), (280, 206), (280, 201), 
+        (280, 192), (280, 188), (280, 184), (280, 179)
+    ]
+    # fmt: on
+    def maker(i: int) -> Maker:
+        def make(img: BuildImage) -> BuildImage:
+            img = img.convert("RGBA")
+            if arg == "圆":
+                img = img.circle()
+            img = img.resize_height(80)
+            if img.width < 80:
+                img = img.resize((80, 80), keep_ratio=True)
+            frame = load_image(f"kirby_hammer/{i}.png")
+            if i <= 18:
+                x, y = positions[i]
+                x = x + 40 - img.width // 2
+                frame.paste(img, (x, y), alpha=True)
+            elif i <= 39:
+                x, y = positions[18]
+                x = x + 40 - img.width // 2
+                frame.paste(img, (x, y), alpha=True)
+            return frame
+
+        return make
+
+    return make_gif_or_combined_gif(img, maker, 62, 0.05, FrameAlignPolicy.extend_loop)
