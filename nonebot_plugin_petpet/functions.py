@@ -136,6 +136,23 @@ def rub(
     return save_gif(frames, 0.05)
 
 
+def capoo_rub(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((180, 180))
+    frames: List[IMG] = []
+    locs = [
+        (178, 184, 78, 260),
+        (178, 174, 84, 269),
+        (178, 174, 84, 269),
+        (178, 178, 84, 264),
+    ]
+    for i in range(4):
+        frame = load_image(f"capoo_rub/{i}.png")
+        w, h, x, y = locs[i]
+        frame.paste(img.resize((w, h)), (x, y), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.1)
+
+
 def play(img: BuildImage = UserImg(), arg=NoArg()):
     img = img.convert("RGBA").square()
     # fmt: off
@@ -456,6 +473,26 @@ def eat(img: BuildImage = UserImg(), arg=NoArg()):
     return save_gif(frames, 0.05)
 
 
+def klee_eat(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((83, 83))
+    # fmt: off
+    locs = [
+        (0, 174), (0, 174), (0, 174), (0, 174), (0, 174),
+        (12, 160), (19, 152), (23, 148), (26, 145), (32, 140),
+        (37, 136), (42, 131), (49, 127), (70, 126), (88, 128),
+        (-30, 210), (-19, 207), (-14, 200), (-10, 188), (-7, 179),
+        (-3, 170), (-3, 175), (-1, 174), (0, 174), (0, 174),
+        (0, 174), (0, 174), (0, 174), (0, 174), (0, 174), (0, 174)
+    ]
+    # fmt: on
+    frames: List[IMG] = []
+    for i in range(31):
+        frame = load_image(f"klee_eat/{i}.png")
+        frame.paste(img, locs[i], below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.1)
+
+
 def bite(img: BuildImage = UserImg(), arg=NoArg()):
     img = img.convert("RGBA").square()
     frames: List[IMG] = []
@@ -474,6 +511,18 @@ def bite(img: BuildImage = UserImg(), arg=NoArg()):
         frame = load_image(f"bite/{i}.png")
         frames.append(frame.image)
     return save_gif(frames, 0.07)
+
+
+def hutao_bite(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((100, 100))
+    frames: List[IMG] = []
+    locs = [(98, 101, 108, 234), (96, 100, 108, 237)]
+    for i in range(2):
+        frame = load_image(f"hutao_bite/{i}.png")
+        w, h, x, y = locs[i]
+        frame.paste(img.resize((w, h)), (x, y), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.1)
 
 
 def police(img: BuildImage = UserImg(), arg=NoArg()):
@@ -1993,15 +2042,16 @@ def kirby_hammer(img: BuildImage = UserImg(), arg: str = Arg(["圆"])):
 
         return make
 
-    return make_gif_or_combined_gif(
-        img, maker, 62, 0.05, FrameAlignPolicy.extend_loop
-    )
+    return make_gif_or_combined_gif(img, maker, 62, 0.05, FrameAlignPolicy.extend_loop)
 
 
 def wooden_fish(img: BuildImage = UserImg(), arg=NoArg()):
     img = img.convert("RGBA").resize((85, 85))
-    frames = [load_image(f"wooden_fish/{i}.png").paste(img, (116, 153), below=True).image for i in range(66)]
-    return save_gif(frames, 0.10)
+    frames = [
+        load_image(f"wooden_fish/{i}.png").paste(img, (116, 153), below=True).image
+        for i in range(66)
+    ]
+    return save_gif(frames, 0.1)
 
 
 def karyl_point(img: BuildImage = UserImg(), arg=NoArg()):
@@ -2009,3 +2059,100 @@ def karyl_point(img: BuildImage = UserImg(), arg=NoArg()):
     frame = load_image("karyl_point/0.png")
     frame.paste(img, (87, 790), alpha=True)
     return frame.save_png()
+
+
+def kick_ball(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((78, 78))
+    # fmt: off
+    locs = [
+        (57, 136), (56, 117), (55, 99), (52, 113), (50, 126),
+        (48, 139), (47, 112), (47, 85), (47, 57), (48, 97),
+        (50, 136), (51, 176), (52, 169), (55, 181), (58, 153)
+    ]
+    # fmt: on
+    frames: List[IMG] = []
+    for i in range(15):
+        frame = load_image(f"kick_ball/{i}.png")
+        frame.paste(img.rotate(-24 * i), locs[i], below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.1)
+
+
+def smash(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("smash/0.png")
+
+    def make(img: BuildImage) -> BuildImage:
+        points = ((1, 237), (826, 1), (832, 508), (160, 732))
+        screen = img.resize((800, 500), keep_ratio=True).perspective(points)
+        return frame.copy().paste(screen, (-136, -81), below=True)
+
+    return make_jpg_or_gif(img, make)
+
+
+def bocchi_draft(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").resize((350, 400), keep_ratio=True)
+    params = [
+        (((54, 62), (353, 1), (379, 382), (1, 399)), (146, 173)),
+        (((54, 61), (349, 1), (379, 381), (1, 398)), (146, 174)),
+        (((54, 61), (349, 1), (379, 381), (1, 398)), (152, 174)),
+        (((54, 61), (335, 1), (379, 381), (1, 398)), (158, 167)),
+        (((54, 61), (335, 1), (370, 381), (1, 398)), (157, 149)),
+        (((41, 59), (321, 1), (357, 379), (1, 396)), (167, 108)),
+        (((41, 57), (315, 1), (357, 377), (1, 394)), (173, 69)),
+        (((41, 56), (309, 1), (353, 380), (1, 393)), (175, 43)),
+        (((41, 56), (314, 1), (353, 380), (1, 393)), (174, 30)),
+        (((41, 50), (312, 1), (348, 367), (1, 387)), (171, 18)),
+        (((35, 50), (306, 1), (342, 367), (1, 386)), (178, 14)),
+    ]
+    # fmt: off
+    idx = [
+        0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,
+    ]
+    # fmt: on
+    frames: List[IMG] = []
+    for i in range(23):
+        frame = load_image(f"bocchi_draft/{i}.png")
+        points, pos = params[idx[i]]
+        frame.paste(img.perspective(points), pos, below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.08)
+
+
+def sit_still(user: UserInfo = User(), arg: str = Arg()):
+    name = arg or user.name
+    frame = load_image("sit_still/0.png")
+    try:
+        frame.draw_text(
+            (100, 170, 600, 330),
+            name,
+            valign="bottom",
+            max_fontsize=75,
+            min_fontsize=30,
+        )
+    except ValueError:
+        return NAME_TOO_LONG
+    img = user.img.convert("RGBA").circle().resize((150, 150)).rotate(-10, expand=True)
+    frame.paste(img, (268, 344), alpha=True)
+    return frame.save_jpg()
+
+
+def learn(img: BuildImage = UserImg(), arg: str = Arg()):
+    text = arg or "偷学群友数理基础"
+    frame = load_image("learn/0.png")
+    try:
+        frame.draw_text(
+            (100, 1360, frame.width - 100, 1730),
+            text,
+            max_fontsize=350,
+            min_fontsize=200,
+            weight="bold",
+        )
+    except ValueError:
+        return TEXT_TOO_LONG
+
+    def make(img: BuildImage) -> BuildImage:
+        return frame.copy().paste(
+            img.resize((1751, 1347), keep_ratio=True), (1440, 0), alpha=True
+        )
+
+    return make_jpg_or_gif(img, make)
