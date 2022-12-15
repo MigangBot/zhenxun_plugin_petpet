@@ -367,6 +367,19 @@ def turn(img: BuildImage = UserImg(), arg=NoArg()):
     return save_gif(frames, 0.05)
 
 
+def windmill_turn(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").resize((300, 300), keep_ratio=True)
+    frame = BuildImage.new("RGBA", (600, 600), "white")
+    frame.paste(img)
+    frame.paste(img.rotate(90), (0, 300))
+    frame.paste(img.rotate(180), (300, 300))
+    frame.paste(img.rotate(270), (300, 0))
+    frames = [
+        frame.copy().rotate(i).crop((50, 50, 550, 550)).image for i in range(0, 90, 18)
+    ]
+    return save_gif(frames, 0.05)
+
+
 def littleangel(user: UserInfo = User(), arg: str = Arg()):
     img_w, img_h = user.img.convert("RGBA").resize_width(500).size
     frame = BuildImage.new("RGBA", (600, img_h + 230), "white")
@@ -2156,3 +2169,17 @@ def learn(img: BuildImage = UserImg(), arg: str = Arg()):
         )
 
     return make_jpg_or_gif(img, make)
+
+
+def trance(img: BuildImage = UserImg(), arg: str = Arg()):
+    width, height = img.size
+    height1 = int(1.1 * height)
+    frame = BuildImage.new("RGB", (width, height1), "white")
+    frame.paste(img, (0, int(height * 0.1)))
+    img.image.putalpha(3)
+    for i in range(int(height * 0.1), 0, -1):
+        frame.paste(img, (0, i), alpha=True)
+    for i in range(int(height * 0.1), int(height * 0.1 * 2)):
+        frame.paste(img, (0, i), alpha=True)
+    frame = frame.crop((0, int(0.1 * height), width, height1))
+    return frame.save_jpg()

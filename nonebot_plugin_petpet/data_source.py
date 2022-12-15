@@ -19,6 +19,7 @@ memes = [
     Meme("always_always", always_always, ("一直一直",)),
     Meme("loading", loading, ("加载中",)),
     Meme("turn", turn, ("转",)),
+    Meme("windmill_turn", windmill_turn, ("风车转",)),
     Meme("littleangel", littleangel, ("小天使",)),
     Meme("dont_touch", dont_touch, ("不要靠近",)),
     Meme("alike", alike, ("一样",)),
@@ -107,6 +108,7 @@ memes = [
     Meme("bocchi_draft", bocchi_draft, ("波奇手稿",)),
     Meme("sit_still", sit_still, ("坐得住", "坐的住")),
     Meme("learn", learn, ("偷学",)),
+    Meme("trance", trance, ("恍惚",)),
 ]
 
 memes = [meme for meme in memes if meme.name not in petpet_config.petpet_disabled_list]
