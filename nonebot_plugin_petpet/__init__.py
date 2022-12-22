@@ -44,7 +44,7 @@ from .manager import meme_manager, ActionResult, MemeMode
 #         "unique_name": "petpet",
 #         "example": "摸 @小Q\n摸 114514\n摸 自己\n摸 [图片]",
 #         "author": "meetwq <meetwq@gmail.com>",
-#         "version": "0.3.17.1",
+#         "version": "0.3.18",
 #     },
 # )
 
