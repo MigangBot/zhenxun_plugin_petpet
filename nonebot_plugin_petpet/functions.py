@@ -296,6 +296,34 @@ def always(img: BuildImage = UserImg(), arg=NoArg()):
     return make_jpg_or_gif(img, make)
 
 
+def always_cycle(img: BuildImage = UserImg(), arg=NoArg()):
+    tmp = img.convert("RGBA").resize_width(500)
+    img_h = tmp.height
+    text_h = tmp.resize_width(100).height + tmp.resize_width(20).height + 10
+    text_h = max(text_h, 80)
+    frame_h = img_h + text_h
+    text_frame = BuildImage.new("RGBA", (500, frame_h), "white")
+    text_frame.draw_text(
+        (0, img_h, 280, frame_h), "要我一直", halign="right", max_fontsize=60
+    ).draw_text((400, img_h, 500, frame_h), "吗", halign="left", max_fontsize=60)
+
+    def make(img: BuildImage) -> BuildImage:
+        img = img.resize_width(500)
+        base_frame = text_frame.copy().paste(img, alpha=True)
+        frame = BuildImage.new("RGBA", base_frame.size, "white")
+        r = 1
+        for _ in range(4):
+            x = int(358 * (1 - r))
+            y = int(frame_h * (1 - r))
+            w = int(500 * r)
+            h = int(frame_h * r)
+            frame.paste(base_frame.resize((w, h)), (x, y))
+            r /= 5
+        return frame
+
+    return make_jpg_or_gif(img, make)
+
+
 def always_always(img: BuildImage = UserImg(), arg=NoArg()):
     tmp = img.convert("RGBA").resize_width(500)
     img_h = tmp.height
@@ -368,16 +396,19 @@ def turn(img: BuildImage = UserImg(), arg=NoArg()):
 
 
 def windmill_turn(img: BuildImage = UserImg(), arg=NoArg()):
-    img = img.convert("RGBA").resize((300, 300), keep_ratio=True)
-    frame = BuildImage.new("RGBA", (600, 600), "white")
-    frame.paste(img)
-    frame.paste(img.rotate(90), (0, 300))
-    frame.paste(img.rotate(180), (300, 300))
-    frame.paste(img.rotate(270), (300, 0))
-    frames = [
-        frame.copy().rotate(i).crop((50, 50, 550, 550)).image for i in range(0, 90, 18)
-    ]
-    return save_gif(frames, 0.05)
+    def maker(i: int) -> Maker:
+        def make(img: BuildImage) -> BuildImage:
+            img = img.convert("RGBA").resize((300, 300), keep_ratio=True)
+            frame = BuildImage.new("RGBA", (600, 600), "white")
+            frame.paste(img, alpha=True)
+            frame.paste(img.rotate(90), (0, 300), alpha=True)
+            frame.paste(img.rotate(180), (300, 300), alpha=True)
+            frame.paste(img.rotate(270), (300, 0), alpha=True)
+            return frame.rotate(i * 18).crop((50, 50, 550, 550))
+
+        return make
+
+    return make_gif_or_combined_gif(img, maker, 5, 0.05, FrameAlignPolicy.extend_loop)
 
 
 def littleangel(user: UserInfo = User(), arg: str = Arg()):
@@ -1345,6 +1376,13 @@ def marriage(img: BuildImage = UserImg(), arg=NoArg()):
     return frame.save_jpg()
 
 
+def divorce(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("divorce/0.png")
+    img = img.convert("RGBA").resize(frame.size, keep_ratio=True)
+    frame.paste(img, below=True)
+    return frame.save_jpg()
+
+
 def painter(img: BuildImage = UserImg(), arg=NoArg()):
     img = img.convert("RGBA").resize((240, 345), keep_ratio=True, direction="north")
     frame = load_image("painter/0.png")
@@ -1542,7 +1580,7 @@ def addition(img: BuildImage = UserImg(), arg: str = Arg()):
         frame = expand_frame
 
     def make(img: BuildImage) -> BuildImage:
-        return frame.copy().paste(img.resize((70, 70), keep_ratio=True), (0, 0))
+        return frame.copy().paste(img.resize((91, 91), keep_ratio=True), (0, 0))
 
     return make_jpg_or_gif(img, make)
 
@@ -2182,4 +2220,156 @@ def trance(img: BuildImage = UserImg(), arg: str = Arg()):
     for i in range(int(height * 0.1), int(height * 0.1 * 2)):
         frame.paste(img, (0, i), alpha=True)
     frame = frame.crop((0, int(0.1 * height), width, height1))
+    return frame.save_jpg()
+
+
+def dinosaur(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("dinosaur/0.png")
+
+    def make(img: BuildImage) -> BuildImage:
+        return frame.copy().paste(
+            img.resize((680, 578), keep_ratio=True), (294, 369), below=True
+        )
+
+    return make_jpg_or_gif(img, make)
+
+
+def scratch_head(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((68, 68))
+    frames: List[IMG] = []
+    locs = [
+        (53, 46, 4, 5),
+        (50, 45, 7, 6),
+        (50, 42, 6, 8),
+        (50, 44, 7, 7),
+        (53, 42, 4, 8),
+        (52, 45, 7, 7),
+    ]
+    for i in range(6):
+        frame = load_image(f"scratch_head/{i}.png")
+        w, h, x, y = locs[i]
+        frame.paste(img.resize((w, h)), (x, y), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.1)
+
+
+def applaud(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((110, 110))
+    frames: List[IMG] = []
+    locs = [
+        (109, 102, 27, 17),
+        (107, 105, 28, 15),
+        (110, 106, 27, 14),
+        (109, 106, 27, 14),
+        (107, 108, 29, 12),
+    ]
+    for i in range(5):
+        frame = load_image(f"applaud/{i}.png")
+        w, h, x, y = locs[i]
+        frame.paste(img.resize((w, h)), (x, y), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.1)
+
+
+def chase_train(img: BuildImage = UserImg(), arg=NoArg()):
+    img = img.convert("RGBA").square().resize((42, 42))
+    frames: List[IMG] = []
+    # fmt: off
+    locs = [
+        (35, 34, 128, 44), (35, 33, 132, 40), (33, 34, 133, 36), (33, 38, 135, 41),
+        (34, 34, 136, 38), (35, 35, 136, 33), (33, 34, 138, 38), (36, 35, 138, 34),
+        (38, 34, 139, 32), (40, 35, 139, 37), (36, 35, 139, 33), (39, 36, 138, 28),
+        (40, 35, 138, 33), (37, 34, 138, 31), (43, 36, 135, 27), (36, 37, 136, 32),
+        (38, 40, 135, 26), (37, 35, 133, 26), (33, 36, 132, 30), (33, 39, 132, 25),
+        (32, 36, 131, 23), (33, 36, 130, 31), (35, 39, 128, 25), (33, 35, 127, 23),
+        (34, 36, 126, 29), (34, 40, 124, 25), (39, 36, 119, 23), (35, 36, 119, 32),
+        (35, 37, 116, 27), (36, 38, 113, 23), (34, 35, 113, 32), (39, 36, 113, 23),
+        (36, 35, 114, 17), (36, 38, 111, 13), (34, 37, 114, 15), (34, 39, 111, 10),
+        (33, 39, 109, 11), (36, 35, 104, 17), (34, 36, 102, 14), (34, 35, 99, 14),
+        (35, 38, 96, 16), (35, 35, 93, 14), (36, 35, 89, 15), (36, 36, 86, 18),
+        (36, 39, 83, 14), (34, 36, 81, 16), (40, 41, 74, 17), (38, 36, 74, 15),
+        (39, 35, 70, 16), (33, 35, 69, 20), (36, 35, 66, 17), (36, 35, 62, 17),
+        (37, 36, 57, 21), (35, 39, 57, 15), (35, 36, 53, 17), (35, 38, 51, 20),
+        (37, 36, 47, 19), (37, 35, 47, 18), (40, 36, 43, 19), (38, 35, 42, 22),
+        (40, 34, 38, 20), (38, 34, 37, 21), (39, 32, 35, 24), (39, 33, 33, 22),
+        (39, 36, 32, 22), (38, 35, 32, 25), (35, 37, 31, 22), (37, 37, 31, 23),
+        (36, 31, 31, 28), (37, 34, 32, 25), (36, 37, 32, 23), (36, 33, 33, 30),
+        (35, 34, 33, 27), (38, 33, 33, 28), (37, 34, 33, 29), (36, 35, 35, 28),
+        (36, 37, 36, 27), (43, 39, 33, 30), (35, 34, 38, 31), (37, 34, 39, 30),
+        (36, 34, 40, 30), (39, 35, 41, 30), (41, 36, 41, 29), (40, 37, 44, 32),
+        (40, 37, 45, 29), (39, 38, 48, 28), (38, 33, 50, 33), (35, 38, 53, 28),
+        (37, 34, 54, 31), (38, 34, 57, 32), (41, 35, 57, 29), (35, 34, 63, 29),
+        (41, 35, 62, 29), (38, 35, 66, 28), (35, 33, 70, 29), (40, 39, 70, 28),
+        (36, 36, 74, 28), (37, 35, 77, 26), (37, 35, 79, 28), (38, 35, 81, 27),
+        (36, 35, 85, 27), (37, 36, 88, 29), (36, 34, 91, 27), (38, 39, 94, 24),
+        (39, 34, 95, 27), (37, 34, 98, 26), (36, 35, 103, 24), (37, 36, 99, 28),
+        (34, 36, 97, 34), (34, 38, 102, 38), (37, 37, 99, 40), (39, 36, 101, 47),
+        (36, 36, 106, 43), (35, 35, 109, 40), (35, 39, 112, 43), (33, 36, 116, 41),
+        (36, 36, 116, 39), (34, 37, 121, 45), (35, 41, 123, 38), (34, 37, 126, 35),
+    ]
+    # fmt: on
+    for i in range(120):
+        frame = load_image(f"chase_train/{i}.png")
+        w, h, x, y = locs[i]
+        frame.paste(img.resize((w, h)), (x, y), below=True)
+        frames.append(frame.image)
+    return save_gif(frames, 0.05)
+
+
+def kaleidoscope(img: BuildImage = UserImg(), arg: str = Arg(["圆"])):
+    def make(img: BuildImage) -> BuildImage:
+        circle_num = 10
+        img_per_circle = 4
+        init_angle = 0
+        angle_step = 360 / img_per_circle
+        radius = lambda n: n * 50 + 100
+        cx = cy = radius(circle_num)
+
+        img = img.convert("RGBA")
+        frame = BuildImage.new("RGBA", (cx * 2, cy * 2), "white")
+        for i in range(circle_num):
+            r = radius(i)
+            img_w = i * 35 + 100
+            im = img.resize_width(img_w)
+            if arg == "圆":
+                im = im.circle()
+            for j in range(img_per_circle):
+                angle = init_angle + angle_step * j
+                im_rot = im.rotate(angle - 90, expand=True)
+                x = round(cx + r * math.cos(math.radians(angle)) - im_rot.width / 2)
+                y = round(cy - r * math.sin(math.radians(angle)) - im_rot.height / 2)
+                frame.paste(im_rot, (x, y), alpha=True)
+            init_angle += angle_step / 2
+        return frame
+
+    return make_jpg_or_gif(img, make)
+
+
+def overtime(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("overtime/0.png")
+    img = img.convert("RGBA").resize((250, 250), keep_ratio=True)
+    frame.paste(img.rotate(-25, expand=True), (165, 220), below=True)
+    return frame.save_jpg()
+
+
+def avatar_formula(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("avatar_formula/0.png")
+    img_c = img.convert("RGBA").circle().resize((72, 72))
+    img_tp = img.convert("RGBA").circle().resize((51, 51))
+    frame.paste(img_tp, (948, 247))
+    # fmt: off
+    locs = [
+        (143, 32), (155, 148), (334, 149), (275, 266), (486, 266),
+        (258, 383), (439, 382), (343, 539), (577, 487), (296, 717),
+        (535, 717), (64, 896), (340, 896), (578, 897), (210, 1038),
+        (644, 1039), (64, 1192), (460, 1192), (698, 1192), (1036, 141),
+        (1217, 141), (1243, 263), (1140, 378), (1321, 378), (929, 531),
+        (1325, 531), (1592, 531), (1007, 687), (1390, 687), (1631, 686),
+        (1036, 840), (1209, 839), (1447, 839), (1141, 1018), (1309, 1019),
+        (1546, 1019), (1037, 1197), (1317, 1198), (1555, 1197),
+    ]
+    # fmt: on
+    for i in range(39):
+        x, y = locs[i]
+        frame.paste(img_c, (x, y))
     return frame.save_jpg()
