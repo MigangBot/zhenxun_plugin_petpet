@@ -16,6 +16,7 @@ memes = [
     Meme("crawl", crawl, ("爬",)),
     Meme("support", support, ("精神支柱",)),
     Meme("always", always, ("一直",)),
+    Meme("always_cycle", always_cycle, ("一直套娃",)),
     Meme("always_always", always_always, ("一直一直",)),
     Meme("loading", loading, ("加载中",)),
     Meme("turn", turn, ("转",)),
@@ -72,6 +73,7 @@ memes = [
     Meme("thinkwhat", thinkwhat, ("想什么",)),
     Meme("keepaway", keepaway, ("远离",)),
     Meme("marriage", marriage, ("结婚申请", "结婚登记")),
+    Meme("divorce", divorce, ("离婚协议", "离婚申请")),
     Meme("painter", painter, ("小画家",)),
     Meme("repeat", repeat, ("复读",)),
     Meme("anti_kidnap", anti_kidnap, ("防诱拐",)),
@@ -109,6 +111,13 @@ memes = [
     Meme("sit_still", sit_still, ("坐得住", "坐的住")),
     Meme("learn", learn, ("偷学",)),
     Meme("trance", trance, ("恍惚",)),
+    Meme("dinosuar", dinosaur, ("恐龙", "小恐龙")),
+    Meme("scratch_head", scratch_head, ("挠头",)),
+    Meme("applaud", applaud, ("鼓掌",)),
+    Meme("chase_train", chase_train, ("追列车", "追火车")),
+    Meme("kaleidoscope", kaleidoscope, ("万花筒", "万花镜")),
+    Meme("overtime", overtime, ("加班",)),
+    Meme("avatar_formula", avatar_formula, ("头像公式", "等价无穷小")),
 ]
 
 memes = [meme for meme in memes if meme.name not in petpet_config.petpet_disabled_list]
