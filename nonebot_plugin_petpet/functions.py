@@ -2373,3 +2373,10 @@ def avatar_formula(img: BuildImage = UserImg(), arg=NoArg()):
         x, y = locs[i]
         frame.paste(img_c, (x, y))
     return frame.save_jpg()
+
+
+def potato(img: BuildImage = UserImg(), arg=NoArg()):
+    frame = load_image("potato/0.png")
+    img = img.convert("RGBA").square().resize((458, 458))
+    frame.paste(img.rotate(-5), (531, 15), below=True)
+    return frame.save_jpg()
